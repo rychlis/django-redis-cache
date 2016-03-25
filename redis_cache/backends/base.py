@@ -265,10 +265,7 @@ class BaseRedisCache(BaseCache):
             return client.set(key, value)
         elif timeout > 0:
             if _add_only:
-                added = client.setnx(key, value)
-                if added:
-                    client.expire(key, timeout)
-                return added
+                return client.set(key, value, ex=timeout, nx=True) is True
             return client.setex(key, value, timeout)
         else:
             return False
